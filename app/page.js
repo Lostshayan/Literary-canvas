@@ -1,66 +1,59 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+
+import { useEffect, useState } from "react";
+import PostCard from "@/components/PostCard";
+import { Loader2 } from "lucide-react";
 
 export default function Home() {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const res = await fetch("/api/posts");
+        if (res.ok) {
+          const data = await res.json();
+          setPosts(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch posts:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.js file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div>
+      <div style={{ marginBottom: "3rem", textAlign: "center" }}>
+        <h1 className="literary-text" style={{ fontSize: "2.5rem", marginBottom: "0.5rem" }}>
+          Literary Canvas
+        </h1>
+        <p style={{ color: "var(--text-secondary)", maxWidth: "600px", margin: "0 auto" }}>
+          Discover and share bite-sized poetry, quotes, and stories.
+        </p>
+      </div>
+
+      {loading ? (
+        <div style={{ display: "flex", justifyContent: "center", padding: "4rem 0" }}>
+          <Loader2 className="animate-spin" style={{ color: "var(--text-secondary)" }} size={32} />
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      ) : posts.length === 0 ? (
+        <div style={{ textAlign: "center", padding: "4rem 0", color: "var(--text-secondary)" }}>
+          <p>No posts available yet. Be the first to write something!</p>
         </div>
-      </main>
+      ) : (
+        <div className="masonry-grid">
+          {posts.map((post) => (
+            <div key={post.id} className="masonry-item">
+              <PostCard post={post} />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
