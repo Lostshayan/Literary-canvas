@@ -13,10 +13,16 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  bio           String?   @db.Text
   accounts      Account[]
   sessions      Session[]
   posts         Post[]
   likes         Like[]
+  
+  followers     Follow[] @relation("UserFollowers")
+  following     Follow[] @relation("UserFollowing")
+  notifications Notification[] @relation("UserNotifications")
+  sentNotifications Notification[] @relation("ActionCreator")
 }
 
 model Account {
@@ -72,4 +78,30 @@ model Like {
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@unique([userId, postId])
+}
+
+model Follow {
+  id          String   @id @default(cuid())
+  followerId  String
+  followingId String
+  status      String   @default("PENDING") // PENDING, ACCEPTED
+  createdAt   DateTime @default(now())
+
+  follower  User @relation("UserFollowing", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("UserFollowers", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String   // Person receiving notification
+  actorId   String   // Person who triggered it
+  type      String   // LIKE, FOLLOW_REQUEST, FOLLOW_ACCEPTED
+  postId    String?  // Optional, if related to a post
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user  User  @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
+  actor User  @relation("ActionCreator", fields: [actorId], references: [id], onDelete: Cascade)
 }

@@ -40,6 +40,20 @@ export async function POST(req, { params }) {
           postId,
         },
       });
+
+      // Fetch post to notify author
+      const post = await prisma.post.findUnique({ where: { id: postId }});
+      if (post && post.authorId !== userId) {
+        await prisma.notification.create({
+          data: {
+            userId: post.authorId,
+            actorId: userId,
+            type: "LIKE",
+            postId: postId,
+          }
+        });
+      }
+
       return Response.json({ message: "Liked" }, { status: 200 });
     }
   } catch (error) {

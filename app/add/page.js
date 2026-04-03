@@ -113,7 +113,7 @@ export default function AddPostPage() {
                 className="btn btn-primary" 
                 disabled={loading || isOverLimit || wordCount === 0}
               >
-                {loading ? "Publishing..." : "Publish to Canvas"}
+                {loading ? "Publishing..." : "Publish to Verso"}
               </button>
             </div>
             

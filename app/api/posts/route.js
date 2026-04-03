@@ -43,6 +43,7 @@ export async function POST(req) {
 
     return Response.json(post, { status: 201 });
   } catch (error) {
+    console.error("DEBUG POST ERROR:", error);
     return Response.json({ error: "Failed to create post" }, { status: 500 });
   }
 }

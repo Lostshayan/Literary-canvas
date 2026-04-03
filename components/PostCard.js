@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { Heart } from "lucide-react";
+import Link from "next/link";
 
 export default function PostCard({ post }) {
   const { data: session } = useSession();
@@ -36,18 +37,19 @@ export default function PostCard({ post }) {
   };
 
   return (
-    <div className="post-card" style={{ backgroundColor: post.color }}>
+    <div className="post-card">
+      <div className="post-card-background" style={{ backgroundColor: post.color }} />
       <p className="post-content literary-text">{post.content}</p>
       
       <div className="post-footer">
-        <div className="post-author">
+        <Link href={`/users/${post.authorId}`} className="post-author" style={{ textDecoration: "none" }}>
           {post.author?.image ? (
             <img src={post.author.image} alt={post.author.name} className="author-avatar" />
           ) : (
             <div className="author-avatar" />
           )}
           <span>{post.author?.name?.split(" ")[0] || "Anonymous"}</span>
-        </div>
+        </Link>
         
         <button 
           className={`like-button ${liked ? 'liked' : ''}`} 

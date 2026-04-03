@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import PostCard from "@/components/PostCard";
-import { Loader2, Grid } from "lucide-react";
+import LiteraryLoader from "@/components/LiteraryLoader";
+import { Grid, Edit2, Check } from "lucide-react";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession({
@@ -15,34 +16,52 @@ export default function ProfilePage() {
   });
 
   const [posts, setPosts] = useState([]);
+  const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  
+  const [isEditingBio, setIsEditingBio] = useState(false);
+  const [bioInput, setBioInput] = useState("");
 
   useEffect(() => {
     if (status === "authenticated") {
-      const fetchProfilePosts = async () => {
+      const fetchProfileData = async () => {
         try {
           const res = await fetch("/api/profile");
           if (res.ok) {
             const data = await res.json();
-            setPosts(data);
+            setPosts(data.posts);
+            setProfile(data.profile);
+            setBioInput(data.profile?.bio || "");
           }
         } catch (error) {
-          console.error("Failed to fetch profile posts:", error);
+          console.error("Failed to fetch profile:", error);
         } finally {
           setLoading(false);
         }
       };
 
-      fetchProfilePosts();
+      fetchProfileData();
     }
   }, [status]);
 
+  const handleSaveBio = async () => {
+    try {
+      const res = await fetch("/api/profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bio: bioInput })
+      });
+      if (res.ok) {
+        setProfile(prev => ({ ...prev, bio: bioInput }));
+        setIsEditingBio(false);
+      }
+    } catch(e) {
+      console.error(e);
+    }
+  };
+
   if (status === "loading" || loading) {
-    return (
-      <div style={{ display: "flex", justifyContent: "center", padding: "4rem 0" }}>
-        <Loader2 className="animate-spin" style={{ color: "var(--text-secondary)" }} size={32} />
-      </div>
-    );
+    return <LiteraryLoader />;
   }
 
   return (
@@ -53,15 +72,41 @@ export default function ProfilePage() {
         ) : (
           <div className="profile-avatar" style={{ backgroundColor: "var(--border)" }} />
         )}
-        <div className="profile-info">
+        <div className="profile-info" style={{ flexGrow: 1 }}>
           <h1 className="literary-text">{session.user.name}</h1>
-          <p>{posts.length} {posts.length === 1 ? 'post' : 'posts'}</p>
+          <p style={{ display: "flex", gap: "1rem", marginTop: "0.25rem", color: "var(--text-primary)", fontWeight: "500" }}>
+            <span>{profile?._count?.followers || 0} Followers</span>
+            <span>{profile?._count?.following || 0} Following</span>
+            <span>{posts.length} Posts</span>
+          </p>
+
+          <div style={{ marginTop: "1rem" }}>
+            {isEditingBio ? (
+              <div style={{ display: "flex", gap: "0.5rem", alignItems: "flex-start" }}>
+                <textarea 
+                  value={bioInput} 
+                  onChange={e => setBioInput(e.target.value)} 
+                  maxLength={150}
+                  style={{ minHeight: "80px" }}
+                  placeholder="Tell us about your writing..."
+                />
+                <button onClick={handleSaveBio} className="btn btn-primary" style={{ padding: "0.5rem" }}><Check size={18} /></button>
+              </div>
+            ) : (
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <p style={{ fontStyle: profile?.bio ? "italic" : "normal", color: profile?.bio ? "var(--text-primary)" : "var(--text-secondary)" }}>
+                  {profile?.bio || "No bio added yet."}
+                </p>
+                <button onClick={() => setIsEditingBio(true)} className="btn btn-ghost" style={{ padding: "0.25rem" }}><Edit2 size={14} /></button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1.5rem", color: "var(--text-secondary)" }}>
         <Grid size={20} />
-        <h2 style={{ fontSize: "1.2rem", fontWeight: "500" }}>Your Canvas</h2>
+        <h2 style={{ fontSize: "1.2rem", fontWeight: "500" }}>Your Verso</h2>
       </div>
 
       {posts.length === 0 ? (
