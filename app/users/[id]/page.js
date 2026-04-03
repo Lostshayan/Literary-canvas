@@ -76,11 +76,24 @@ export default function UserProfile({ params }) {
         Back
       </button>
 
-      <div className="profile-header" style={{ position: "relative" }}>
+      <div className="profile-header" style={{ alignItems: "flex-start" }}>
         <img src={data.profile.image || "/placeholder.jpg"} alt="Profile" className="profile-avatar" />
-        <div className="profile-info">
-          <h1>{data.profile.name}</h1>
-          <p style={{ display: "flex", gap: "1rem", marginTop: "0.25rem", color: "var(--text-primary)", fontWeight: "500" }}>
+        <div className="profile-info" style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "0.75rem", flexWrap: "wrap" }}>
+            <h1 style={{ margin: 0, wordBreak: "break-word" }}>{data.profile.displayName || data.profile.name}</h1>
+            {session && session.user.id !== id && (
+              <button
+                onClick={handleFollow}
+                className={data.followStatus === "NONE" ? "btn btn-primary" : "btn btn-outline"}
+                style={{ padding: "0.45rem 1.2rem", flexShrink: 0, whiteSpace: "nowrap" }}
+              >
+                {data.followStatus === "NONE" && <><UserPlus size={16} /> Follow</>}
+                {data.followStatus === "PENDING" && <><Clock size={16} /> Requested</>}
+                {data.followStatus === "ACCEPTED" && <><Check size={16} /> Following</>}
+              </button>
+            )}
+          </div>
+          <p style={{ display: "flex", gap: "1rem", marginTop: "0.5rem", color: "var(--text-primary)", fontWeight: "500", flexWrap: "wrap" }}>
             <span>{data.profile._count.followers} Followers</span>
             <span>{data.profile._count.following} Following</span>
           </p>
@@ -88,18 +101,6 @@ export default function UserProfile({ params }) {
             <p style={{ marginTop: "1rem", fontStyle: "italic" }}>{data.profile.bio}</p>
           )}
         </div>
-
-        {session && session.user.id !== id && (
-          <button 
-            onClick={handleFollow}
-            className={data.followStatus === "NONE" ? "btn btn-primary" : "btn btn-outline"} 
-            style={{ position: "absolute", right: "2rem", top: "2rem", padding: "0.5rem 1.5rem" }}
-          >
-            {data.followStatus === "NONE" && <><UserPlus size={18} /> Follow</>}
-            {data.followStatus === "PENDING" && <><Clock size={18} /> Requested</>}
-            {data.followStatus === "ACCEPTED" && <><Check size={18} /> Following</>}
-          </button>
-        )}
       </div>
 
       <div style={{ marginBottom: "2rem" }}>
