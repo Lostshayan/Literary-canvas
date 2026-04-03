@@ -42,11 +42,12 @@ export async function POST(req) {
     const session = await getServerSession(authOptions);
     if (!session || !session.user) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
-    const { bio, displayName } = await req.json();
+    const { bio, displayName, image } = await req.json();
 
     const data = {};
     if (bio !== undefined) data.bio = bio;
     if (displayName !== undefined) data.displayName = displayName.trim().slice(0, 40);
+    if (image !== undefined) data.image = image;
 
     await prisma.user.update({
       where: { id: session.user.id },

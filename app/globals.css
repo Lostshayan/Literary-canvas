@@ -232,14 +232,14 @@ a {
 
 /* Darken canvas pastel colors in dark mode to match the theme */
 [data-theme="dark"] .post-card-background {
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4)) url(#torn-edge) brightness(0.55);
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4)) url(#torn-edge) brightness(0.45);
 }
 
 /* Switch canvas text to light in dark mode since background is dimmed */
 [data-theme="dark"] .post-card {
-  --text-primary: #EAE3D9;
-  --text-secondary: #9B9185;
-  --border: rgba(255,255,255,0.08);
+  --text-primary: #F0EBE1;
+  --text-secondary: #C9BFB5;
+  --border: rgba(255,255,255,0.12);
 }
 
 .post-card-background {
@@ -336,6 +336,12 @@ a {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   flex-wrap: wrap;
+  border: 1px solid var(--border);
+}
+
+[data-theme="dark"] .profile-header {
+  background-color: #2E2823;
+  border-color: rgba(255,255,255,0.1);
 }
 
 .profile-avatar {

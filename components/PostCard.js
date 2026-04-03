@@ -75,7 +75,7 @@ export default function PostCard({ post, onDelete }) {
               onClick={handleDelete}
               className="like-button"
               aria-label="Delete post"
-              style={{ color: "var(--text-secondary)" }}
+              style={{ color: "#C0392B" }}
             >
               <Trash2 size={16} />
             </button>

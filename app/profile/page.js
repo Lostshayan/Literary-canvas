@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { redirect } from "next/navigation";
 import PostCard from "@/components/PostCard";
 import LiteraryLoader from "@/components/LiteraryLoader";
-import { Grid, Edit2, Check, LogOut, ArrowLeft } from "lucide-react";
+import { Grid, Edit2, Check, LogOut, ArrowLeft, Camera, X } from "lucide-react";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession({
@@ -26,6 +26,8 @@ export default function ProfilePage() {
   const [bioInput, setBioInput] = useState("");
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameInput, setNameInput] = useState("");
+  const [showAvatarPicker, setShowAvatarPicker] = useState(false);
+  const [currentAvatar, setCurrentAvatar] = useState(null);
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -38,6 +40,7 @@ export default function ProfilePage() {
             setProfile(data.profile);
             setBioInput(data.profile?.bio || "");
             setNameInput(data.profile?.displayName || "");
+            setCurrentAvatar(data.profile?.image || session?.user?.image || null);
           }
         } catch (error) {
           console.error("Failed to fetch profile:", error);
@@ -78,6 +81,29 @@ export default function ProfilePage() {
     } catch(e) { console.error(e); }
   };
 
+  const handleSaveAvatar = async (avatarUrl) => {
+    try {
+      const res = await fetch("/api/profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: avatarUrl })
+      });
+      if (res.ok) {
+        setCurrentAvatar(avatarUrl);
+        setShowAvatarPicker(false);
+      }
+    } catch(e) { console.error(e); }
+  };
+
+  const PRESET_AVATARS = [
+    "/avatars/avatar-1.png",
+    "/avatars/avatar-2.png",
+    "/avatars/avatar-3.png",
+    "/avatars/avatar-4.png",
+    "/avatars/avatar-5.png",
+    "/avatars/avatar-6.png",
+  ];
+
   if (status === "loading" || loading) {
     return <LiteraryLoader />;
   }
@@ -94,11 +120,27 @@ export default function ProfilePage() {
       </button>
 
       <div className="profile-header">
-        {session.user.image ? (
-          <img src={session.user.image} alt={session.user.name} className="profile-avatar" />
-        ) : (
-          <div className="profile-avatar" style={{ backgroundColor: "var(--border)" }} />
-        )}
+        {/* Clickable avatar with camera overlay */}
+        <div
+          style={{ position: "relative", cursor: "pointer", flexShrink: 0 }}
+          onClick={() => setShowAvatarPicker(true)}
+          title="Change profile picture"
+        >
+          <img
+            src={currentAvatar || session.user.image || "/avatars/avatar-1.png"}
+            alt={session.user.name}
+            className="profile-avatar"
+          />
+          <div style={{
+            position: "absolute", bottom: 0, right: 0,
+            backgroundColor: "var(--accent-hover)", borderRadius: "50%",
+            width: "28px", height: "28px",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            border: "2px solid var(--surface)",
+          }}>
+            <Camera size={13} color="#fff" />
+          </div>
+        </div>
         <div className="profile-info" style={{ flexGrow: 1 }}>
           {/* Display Name Editor */}
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.25rem" }}>
@@ -186,6 +228,45 @@ export default function ProfilePage() {
               <PostCard post={post} onDelete={(id) => setPosts(prev => prev.filter(p => p.id !== id))} />
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Avatar Picker Modal */}
+      {showAvatarPicker && (
+        <div style={{
+          position: "fixed", inset: 0, zIndex: 1000,
+          backgroundColor: "rgba(0,0,0,0.6)", backdropFilter: "blur(6px)",
+          display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem",
+        }} onClick={() => setShowAvatarPicker(false)}>
+          <div style={{
+            backgroundColor: "var(--surface)", borderRadius: "var(--radius-lg)",
+            padding: "2rem", maxWidth: "480px", width: "100%",
+            border: "1px solid var(--border)",
+          }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+              <h2 className="literary-text" style={{ fontSize: "1.4rem" }}>Choose your Avatar</h2>
+              <button onClick={() => setShowAvatarPicker(false)} className="btn btn-ghost" style={{ padding: "0.3rem" }}>
+                <X size={20} />
+              </button>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem" }}>
+              {PRESET_AVATARS.map((src) => (
+                <button
+                  key={src}
+                  onClick={() => handleSaveAvatar(src)}
+                  style={{
+                    padding: 0, border: currentAvatar === src ? "3px solid var(--accent-hover)" : "3px solid transparent",
+                    borderRadius: "12px", overflow: "hidden", cursor: "pointer",
+                    transition: "border-color 0.2s, transform 0.2s",
+                    transform: currentAvatar === src ? "scale(1.05)" : "scale(1)",
+                    background: "none",
+                  }}
+                >
+                  <img src={src} alt="Avatar option" style={{ width: "100%", aspectRatio: "1", objectFit: "cover", display: "block" }} />
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </div>
