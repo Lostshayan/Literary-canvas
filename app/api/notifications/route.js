@@ -8,25 +8,39 @@ export async function GET() {
     const session = await getServerSession(authOptions);
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const notifications = await prisma.notification.findMany({
-      where: { userId: session.user.id },
-      include: {
-        actor: { select: { id: true, name: true, image: true } },
-      },
-      orderBy: { createdAt: "desc" },
-    });
-
     const pendingRequests = await prisma.follow.findMany({
       where: { followingId: session.user.id, status: "PENDING" },
-      include: {
-        follower: { select: { id: true, name: true, image: true } },
-      },
-      orderBy: { createdAt: "desc" },
+      include: { follower: { select: { id: true, name: true, displayName: true, image: true } } },
     });
 
-    return NextResponse.json({ notifications, pendingRequests });
+    const notifications = await prisma.notification.findMany({
+      where: { userId: session.user.id },
+      orderBy: { createdAt: "desc" },
+      take: 20,
+      include: { actor: { select: { id: true, name: true, displayName: true, image: true } } },
+    });
+
+    return NextResponse.json({ pendingRequests, notifications });
   } catch (error) {
-    console.error("Notifications fetch error:", error);
+    console.error("Notifications error:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}
+
+// PATCH — mark all notifications as read
+export async function PATCH() {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    await prisma.notification.updateMany({
+      where: { userId: session.user.id, read: false },
+      data: { read: true },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Mark read error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

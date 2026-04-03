@@ -24,6 +24,8 @@ export default function ProfilePage() {
   
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [bioInput, setBioInput] = useState("");
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [nameInput, setNameInput] = useState("");
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -35,6 +37,7 @@ export default function ProfilePage() {
             setPosts(data.posts);
             setProfile(data.profile);
             setBioInput(data.profile?.bio || "");
+            setNameInput(data.profile?.displayName || "");
           }
         } catch (error) {
           console.error("Failed to fetch profile:", error);
@@ -58,9 +61,21 @@ export default function ProfilePage() {
         setProfile(prev => ({ ...prev, bio: bioInput }));
         setIsEditingBio(false);
       }
-    } catch(e) {
-      console.error(e);
-    }
+    } catch(e) { console.error(e); }
+  };
+
+  const handleSaveName = async () => {
+    try {
+      const res = await fetch("/api/profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ displayName: nameInput })
+      });
+      if (res.ok) {
+        setProfile(prev => ({ ...prev, displayName: nameInput }));
+        setIsEditingName(false);
+      }
+    } catch(e) { console.error(e); }
   };
 
   if (status === "loading" || loading) {
@@ -85,7 +100,30 @@ export default function ProfilePage() {
           <div className="profile-avatar" style={{ backgroundColor: "var(--border)" }} />
         )}
         <div className="profile-info" style={{ flexGrow: 1 }}>
-          <h1 className="literary-text">{session.user.name}</h1>
+          {/* Display Name Editor */}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.25rem" }}>
+            {isEditingName ? (
+              <>
+                <input
+                  value={nameInput}
+                  onChange={e => setNameInput(e.target.value)}
+                  maxLength={40}
+                  style={{
+                    fontSize: "1.5rem", fontFamily: "'Playfair Display', serif", fontWeight: "600",
+                    background: "transparent", border: "none", borderBottom: "2px solid var(--accent-hover)",
+                    color: "var(--text-primary)", outline: "none", width: "100%", padding: "0.1rem 0",
+                  }}
+                  placeholder="Display name..."
+                />
+                <button onClick={handleSaveName} className="btn btn-primary" style={{ padding: "0.35rem 0.6rem", flexShrink: 0 }}><Check size={16} /></button>
+              </>
+            ) : (
+              <>
+                <h1 className="literary-text">{profile?.displayName || session.user.name}</h1>
+                <button onClick={() => setIsEditingName(true)} className="btn btn-ghost" style={{ padding: "0.25rem" }}><Edit2 size={14} /></button>
+              </>
+            )}
+          </div>
           <p style={{ display: "flex", gap: "1rem", marginTop: "0.25rem", color: "var(--text-primary)", fontWeight: "500" }}>
             <span>{profile?._count?.followers || 0} Followers</span>
             <span>{profile?._count?.following || 0} Following</span>
@@ -145,7 +183,7 @@ export default function ProfilePage() {
         <div className="profile-grid">
           {posts.map((post) => (
             <div key={post.id}>
-              <PostCard post={post} />
+              <PostCard post={post} onDelete={(id) => setPosts(prev => prev.filter(p => p.id !== id))} />
             </div>
           ))}
         </div>

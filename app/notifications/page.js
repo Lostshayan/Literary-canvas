@@ -25,6 +25,8 @@ export default function Notifications() {
       if (res.ok) {
         const json = await res.json();
         setData(json);
+        // Mark all as read silently
+        fetch("/api/notifications", { method: "PATCH" });
       }
     } catch(e) {
       console.error(e);

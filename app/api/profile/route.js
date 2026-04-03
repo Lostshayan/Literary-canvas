@@ -14,21 +14,23 @@ export async function GET(req) {
 
     const userProfile = await prisma.user.findUnique({
       where: { id: userId },
-      select: { bio: true, _count: { select: { followers: true, following: true } } }
+      select: {
+        bio: true,
+        displayName: true,
+        name: true,
+        _count: { select: { followers: { where: { status: "ACCEPTED" } }, following: { where: { status: "ACCEPTED" } } } }
+      }
     });
 
     const posts = await prisma.post.findMany({
-      where: {
-        authorId: userId,
-      },
+      where: { authorId: userId },
       include: {
-        author: {
-          select: { name: true, image: true },
-        },
+        author: { select: { id: true, name: true, displayName: true, image: true } },
         likes: true,
       },
       orderBy: { createdAt: "desc" },
     });
+
     return Response.json({ posts, profile: userProfile });
   } catch (error) {
     return Response.json({ error: "Failed to fetch profile" }, { status: 500 });
@@ -40,15 +42,19 @@ export async function POST(req) {
     const session = await getServerSession(authOptions);
     if (!session || !session.user) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
-    const { bio } = await req.json();
+    const { bio, displayName } = await req.json();
+
+    const data = {};
+    if (bio !== undefined) data.bio = bio;
+    if (displayName !== undefined) data.displayName = displayName.trim().slice(0, 40);
 
     await prisma.user.update({
       where: { id: session.user.id },
-      data: { bio },
+      data,
     });
 
-    return Response.json({ message: "Bio updated successfully" });
+    return Response.json({ message: "Profile updated successfully" });
   } catch (error) {
-    return Response.json({ error: "Failed to update bio" }, { status: 500 });
+    return Response.json({ error: "Failed to update profile" }, { status: 500 });
   }
 }

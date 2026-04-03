@@ -21,7 +21,7 @@ export async function GET() {
     const posts = await prisma.post.findMany({
       where: { authorId: { in: authorIds } },
       include: {
-        author: { select: { id: true, name: true, image: true } },
+        author: { select: { id: true, name: true, displayName: true, image: true } },
         likes: true,
       },
       orderBy: { createdAt: "desc" },
