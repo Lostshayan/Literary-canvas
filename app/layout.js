@@ -3,6 +3,7 @@ import Providers from "@/components/Providers";
 import BackgroundEffects from "@/components/BackgroundEffects";
 import Navbar from "@/components/Navbar";
 import BottomNav from "@/components/BottomNav";
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 
 export const metadata = {
   title: "Verso",
@@ -36,6 +37,7 @@ export default function RootLayout({ children }) {
             <main>{children}</main>
           </div>
           <BottomNav />
+          <PWAInstallPrompt />
         </Providers>
       </body>
     </html>
