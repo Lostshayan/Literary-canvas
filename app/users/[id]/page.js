@@ -2,13 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import PostCard from "@/components/PostCard";
 import LiteraryLoader from "@/components/LiteraryLoader";
-import { UserPlus, Clock, Check } from "lucide-react";
+import { UserPlus, Clock, Check, ArrowLeft } from "lucide-react";
 
 export default function UserProfile({ params }) {
   const { id } = params;
   const { data: session } = useSession();
+  const router = useRouter();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -65,6 +67,15 @@ export default function UserProfile({ params }) {
 
   return (
     <div>
+      <button
+        onClick={() => router.back()}
+        className="btn btn-ghost"
+        style={{ marginBottom: "1rem", gap: "0.4rem", paddingLeft: "0" }}
+      >
+        <ArrowLeft size={18} />
+        Back
+      </button>
+
       <div className="profile-header" style={{ position: "relative" }}>
         <img src={data.profile.image || "/placeholder.jpg"} alt="Profile" className="profile-avatar" />
         <div className="profile-info">

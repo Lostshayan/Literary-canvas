@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { redirect } from "next/navigation";
 import PostCard from "@/components/PostCard";
 import LiteraryLoader from "@/components/LiteraryLoader";
-import { Grid, Edit2, Check, LogOut } from "lucide-react";
+import { Grid, Edit2, Check, LogOut, ArrowLeft } from "lucide-react";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession({
@@ -14,6 +15,8 @@ export default function ProfilePage() {
       redirect("/");
     },
   });
+
+  const router = useRouter();
 
   const [posts, setPosts] = useState([]);
   const [profile, setProfile] = useState(null);
@@ -66,6 +69,15 @@ export default function ProfilePage() {
 
   return (
     <div>
+      <button
+        onClick={() => router.back()}
+        className="btn btn-ghost"
+        style={{ marginBottom: "1rem", gap: "0.4rem", paddingLeft: "0" }}
+      >
+        <ArrowLeft size={18} />
+        Back
+      </button>
+
       <div className="profile-header">
         {session.user.image ? (
           <img src={session.user.image} alt={session.user.name} className="profile-avatar" />
@@ -87,7 +99,12 @@ export default function ProfilePage() {
                   value={bioInput} 
                   onChange={e => setBioInput(e.target.value)} 
                   maxLength={150}
-                  style={{ minHeight: "80px" }}
+                  style={{ 
+                    minHeight: "80px",
+                    color: "var(--text-primary)",
+                    backgroundColor: "var(--surface)",
+                    caretColor: "var(--text-primary)",
+                  }}
                   placeholder="Tell us about your writing..."
                 />
                 <button onClick={handleSaveBio} className="btn btn-primary" style={{ padding: "0.5rem" }}><Check size={18} /></button>

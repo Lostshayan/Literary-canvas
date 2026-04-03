@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 
 // Preset colors for the pastel/beige aesthetic
 const colors = [
@@ -63,6 +64,15 @@ export default function AddPostPage() {
 
   return (
     <div style={{ maxWidth: "600px", margin: "0 auto", padding: "1rem 0 2rem" }}>
+      <button
+        onClick={() => router.back()}
+        className="btn btn-ghost"
+        style={{ marginBottom: "1rem", gap: "0.4rem", paddingLeft: "0" }}
+      >
+        <ArrowLeft size={18} />
+        Back
+      </button>
+
       <h1 className="literary-text" style={{ fontSize: "2rem", marginBottom: "1.5rem" }}>
         Write something beautiful
       </h1>
