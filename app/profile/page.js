@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 import { redirect } from "next/navigation";
 import PostCard from "@/components/PostCard";
 import LiteraryLoader from "@/components/LiteraryLoader";
-import { Grid, Edit2, Check, LogOut, ArrowLeft, Camera, X } from "lucide-react";
+import Link from "next/link";
+import { Grid, Edit2, Check, LogOut, ArrowLeft, Camera, X, PenSquare } from "lucide-react";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession({
@@ -218,8 +219,12 @@ export default function ProfilePage() {
       </div>
 
       {posts.length === 0 ? (
-        <div style={{ textAlign: "center", padding: "4rem 0", color: "var(--text-secondary)", backgroundColor: "var(--surface)", borderRadius: "var(--radius-lg)" }}>
+        <div style={{ textAlign: "center", padding: "4rem 0", color: "var(--text-secondary)", backgroundColor: "var(--surface)", borderRadius: "var(--radius-lg)", display: "flex", flexDirection: "column", alignItems: "center", gap: "1.25rem" }}>
           <p>You haven't posted anything yet.</p>
+          <Link href="/add" className="btn btn-primary" style={{ gap: "0.4rem" }}>
+            <PenSquare size={16} />
+            Write your first Verso
+          </Link>
         </div>
       ) : (
         <div className="profile-grid">

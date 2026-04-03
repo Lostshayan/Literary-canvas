@@ -65,7 +65,7 @@ export default function Home() {
       ) : posts.length === 0 ? (
         <div style={{ textAlign: "center", padding: "4rem 0", color: "var(--text-secondary)" }}>
           <p style={{ marginBottom: "1rem" }}>Your timeline is empty. Follow some authors to fill it up!</p>
-          <Link href="/explore" className="btn btn-outline">Go to Explore</Link>
+          <Link href="/explore" className="btn btn-outline" style={{ border: "2px solid var(--text-secondary)", padding: "0.6rem 1.4rem", fontWeight: "500" }}>Go to Explore →</Link>
         </div>
       ) : (
         <div className="masonry-grid">
