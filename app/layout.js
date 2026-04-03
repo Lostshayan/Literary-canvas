@@ -4,7 +4,6 @@ import BackgroundEffects from "@/components/BackgroundEffects";
 import Navbar from "@/components/Navbar";
 import BottomNav from "@/components/BottomNav";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
-import OnboardingGuard from "@/components/OnboardingGuard";
 
 export const metadata = {
   title: "Verso",
@@ -32,7 +31,6 @@ export default function RootLayout({ children }) {
           </filter>
         </svg>
         <Providers>
-          <OnboardingGuard />
           <BackgroundEffects />
           <div className="container" style={{ paddingBottom: "6rem" }}>
             <Navbar />
