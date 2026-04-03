@@ -154,7 +154,7 @@ a {
 }
 
 .btn-primary:hover {
-  background-color: #26201C;
+  opacity: 0.85;
   transform: translateY(-1px);
 }
 
@@ -228,6 +228,11 @@ a {
 .post-card:hover {
   transform: translateY(-4px);
   filter: drop-shadow(0 0 15px var(--glow-color));
+}
+
+/* Darken canvas pastel colors in dark mode to match the theme */
+[data-theme="dark"] .post-card-background {
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4)) url(#torn-edge) brightness(0.55);
 }
 
 .post-card-background {
