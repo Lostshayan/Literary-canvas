@@ -6,7 +6,17 @@ import BottomNav from "@/components/BottomNav";
 
 export const metadata = {
   title: "Verso",
-  description: "A digital social network for short poetic texts and handmade literary pieces.",
+  description: "A private social network for short poetic texts and literary pieces.",
+  manifest: "/manifest.json",
+  themeColor: "#38302A",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Verso",
+  },
+  icons: {
+    apple: "/icon-192.png",
+  },
 };
 
 export default function RootLayout({ children }) {
