@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
+import { usePathname } from "next/navigation";
 import { PenSquare, LogIn, Bell, Sun, Moon } from "lucide-react";
 import { useTheme } from "./Providers";
 import { useAvatar } from "./Providers";
@@ -11,7 +12,10 @@ export default function Navbar() {
   const { data: session } = useSession();
   const { theme, toggleTheme } = useTheme();
   const { avatar } = useAvatar();
+  const pathname = usePathname();
   const [hasUnread, setHasUnread] = useState(false);
+
+  if (pathname === "/onboarding") return null;
 
   useEffect(() => {
     if (session) {

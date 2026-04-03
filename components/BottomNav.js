@@ -12,6 +12,7 @@ export default function BottomNav() {
   // Only show the floating toggle to logged in users, and usually only on feed/explore pages.
   // We can show it everywhere, or conditionally. The user said "bring it from navbar to bottom... easy to access".
   if (!session) return null;
+  if (pathname === "/onboarding") return null;
 
   return (
     <div className="bottom-switcher-container">
