@@ -5,10 +5,12 @@ import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { PenSquare, LogIn, Bell, Sun, Moon } from "lucide-react";
 import { useTheme } from "./Providers";
+import { useAvatar } from "./Providers";
 
 export default function Navbar() {
   const { data: session } = useSession();
   const { theme, toggleTheme } = useTheme();
+  const { avatar } = useAvatar();
   const [hasUnread, setHasUnread] = useState(false);
 
   useEffect(() => {
@@ -57,8 +59,8 @@ export default function Navbar() {
             </Link>
 
             <Link href="/profile" className="navbar-avatar" title="Profile">
-              {session.user.image ? (
-                <img src={session.user.image} alt="Profile" />
+              {(avatar || session?.user?.image) ? (
+                <img src={avatar || session.user.image} alt="Profile" />
               ) : (
                 <div className="navbar-avatar-fallback" />
               )}

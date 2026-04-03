@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import PostCard from "@/components/PostCard";
 import LiteraryLoader from "@/components/LiteraryLoader";
 import Link from "next/link";
+import { useAvatar } from "@/components/Providers";
 import { Grid, Edit2, Check, LogOut, ArrowLeft, Camera, X, PenSquare } from "lucide-react";
 
 export default function ProfilePage() {
@@ -23,12 +24,12 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   
+  const { avatar, setAvatar } = useAvatar();
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [bioInput, setBioInput] = useState("");
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameInput, setNameInput] = useState("");
   const [showAvatarPicker, setShowAvatarPicker] = useState(false);
-  const [currentAvatar, setCurrentAvatar] = useState(null);
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -41,7 +42,8 @@ export default function ProfilePage() {
             setProfile(data.profile);
             setBioInput(data.profile?.bio || "");
             setNameInput(data.profile?.displayName || "");
-            setCurrentAvatar(data.profile?.image || session?.user?.image || null);
+            // Only set avatar from DB if not already set via context
+            if (!avatar) setAvatar(data.profile?.image || session?.user?.image || null);
           }
         } catch (error) {
           console.error("Failed to fetch profile:", error);
@@ -90,7 +92,7 @@ export default function ProfilePage() {
         body: JSON.stringify({ image: avatarUrl })
       });
       if (res.ok) {
-        setCurrentAvatar(avatarUrl);
+        setAvatar(avatarUrl); // updates Navbar instantly via context
         setShowAvatarPicker(false);
       }
     } catch(e) { console.error(e); }
@@ -128,7 +130,7 @@ export default function ProfilePage() {
           title="Change profile picture"
         >
           <img
-            src={currentAvatar || session.user.image || "/avatars/avatar-1.png"}
+            src={avatar || session.user.image || "/avatars/avatar-1.png"}
             alt={session.user.name}
             className="profile-avatar"
           />

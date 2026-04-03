@@ -18,6 +18,7 @@ export async function GET(req) {
         bio: true,
         displayName: true,
         name: true,
+        image: true,
         _count: { select: { followers: { where: { status: "ACCEPTED" } }, following: { where: { status: "ACCEPTED" } } } }
       }
     });
