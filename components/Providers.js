@@ -25,13 +25,14 @@ function AvatarProvider({ children }) {
     fetch("/api/profile")
       .then(r => r.json())
       .then(data => {
-        // Set the avatar from DB (overrides Google auth image)
+        // Set avatar first — React processes this state update on its own
         const img = data.profile?.image || session?.user?.image || null;
         setAvatar(img);
 
-        // Onboarding guard — if no display name and not already there
+        // Defer navigation to the next event loop tick so setAvatar
+        // completes its render before the Router is updated (fixes React #300)
         if (!data.profile?.displayName && pathname !== "/onboarding") {
-          router.replace("/onboarding");
+          setTimeout(() => router.replace("/onboarding"), 0);
         }
       })
       .catch(() => {
