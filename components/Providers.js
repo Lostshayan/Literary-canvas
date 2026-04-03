@@ -2,7 +2,6 @@
 
 import { SessionProvider, useSession } from "next-auth/react";
 import { createContext, useContext, useState, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
 
 // ─── Theme Context ─────────────────────────────────────────────────────────
 const ThemeContext = createContext({ theme: "light", toggleTheme: () => {} });
@@ -15,29 +14,17 @@ export const useAvatar = () => useContext(AvatarContext);
 // Inner component — runs inside SessionProvider so useSession works
 function AvatarProvider({ children }) {
   const { data: session, status } = useSession();
-  const router = useRouter();
-  const pathname = usePathname();
   const [avatar, setAvatar] = useState(null);
 
   useEffect(() => {
     if (status !== "authenticated") return;
-
     fetch("/api/profile")
       .then(r => r.json())
       .then(data => {
-        // Set avatar first — React processes this state update on its own
         const img = data.profile?.image || session?.user?.image || null;
         setAvatar(img);
-
-        // Defer navigation to the next event loop tick so setAvatar
-        // completes its render before the Router is updated (fixes React #300)
-        if (!data.profile?.displayName && pathname !== "/onboarding") {
-          setTimeout(() => router.replace("/onboarding"), 0);
-        }
       })
-      .catch(() => {
-        setAvatar(session?.user?.image || null);
-      });
+      .catch(() => setAvatar(session?.user?.image || null));
   }, [status]);
 
   return (

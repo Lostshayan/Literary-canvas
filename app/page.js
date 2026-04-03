@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import PostCard from "@/components/PostCard";
 import LiteraryLoader from "@/components/LiteraryLoader";
 import { Compass } from "lucide-react";
@@ -9,6 +10,7 @@ import Link from "next/link";
 
 export default function Home() {
   const { data: session, status } = useSession();
+  const router = useRouter();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -20,6 +22,14 @@ export default function Home() {
     if (status === "authenticated") {
       const fetchFeed = async () => {
         try {
+          // Check onboarding first
+          const profileRes = await fetch("/api/profile");
+          const profileData = await profileRes.json();
+          if (!profileData.profile?.displayName) {
+            router.replace("/onboarding");
+            return;
+          }
+
           const res = await fetch("/api/feed");
           if (res.ok) {
             const data = await res.json();

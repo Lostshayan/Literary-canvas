@@ -10,6 +10,9 @@ export const metadata = {
   description: "A private social network for short poetic texts and literary pieces.",
   manifest: "/manifest.json",
   themeColor: "#38302A",
+  other: {
+    "mobile-web-app-capable": "yes",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
