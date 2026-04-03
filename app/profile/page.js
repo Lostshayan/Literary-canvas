@@ -262,10 +262,10 @@ export default function ProfilePage() {
                   key={src}
                   onClick={() => handleSaveAvatar(src)}
                   style={{
-                    padding: 0, border: currentAvatar === src ? "3px solid var(--accent-hover)" : "3px solid transparent",
+                    padding: 0, border: avatar === src ? "3px solid var(--accent-hover)" : "3px solid transparent",
                     borderRadius: "12px", overflow: "hidden", cursor: "pointer",
                     transition: "border-color 0.2s, transform 0.2s",
-                    transform: currentAvatar === src ? "scale(1.05)" : "scale(1)",
+                    transform: avatar === src ? "scale(1.05)" : "scale(1)",
                     background: "none",
                   }}
                 >
