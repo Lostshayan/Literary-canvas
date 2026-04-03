@@ -217,7 +217,7 @@ export default function ProfilePage() {
 
       <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1.5rem", color: "var(--text-secondary)" }}>
         <Grid size={20} />
-        <h2 style={{ fontSize: "1.2rem", fontWeight: "500" }}>Your Verso</h2>
+        <h2 style={{ fontSize: "1.2rem", fontWeight: "500" }}>Your Posts</h2>
       </div>
 
       {posts.length === 0 ? (
@@ -225,7 +225,7 @@ export default function ProfilePage() {
           <p>You haven't posted anything yet.</p>
           <Link href="/add" className="btn btn-primary" style={{ gap: "0.4rem" }}>
             <PenSquare size={16} />
-            Write your first Verso
+            Write your first post
           </Link>
         </div>
       ) : (
