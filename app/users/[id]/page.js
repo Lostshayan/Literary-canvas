@@ -69,8 +69,8 @@ export default function UserProfile({ params }) {
     <div>
       <button
         onClick={() => router.back()}
-        className="btn btn-ghost"
-        style={{ marginBottom: "1rem", gap: "0.4rem", paddingLeft: "0" }}
+        className="btn btn-outline"
+        style={{ marginBottom: "1rem", gap: "0.4rem" }}
       >
         <ArrowLeft size={18} />
         Back

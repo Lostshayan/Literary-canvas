@@ -66,8 +66,8 @@ export default function AddPostPage() {
     <div style={{ maxWidth: "600px", margin: "0 auto", padding: "1rem 0 2rem" }}>
       <button
         onClick={() => router.back()}
-        className="btn btn-ghost"
-        style={{ marginBottom: "1rem", gap: "0.4rem", paddingLeft: "0" }}
+        className="btn btn-outline"
+        style={{ marginBottom: "1rem", gap: "0.4rem" }}
       >
         <ArrowLeft size={18} />
         Back
@@ -77,10 +77,11 @@ export default function AddPostPage() {
         Write something beautiful
       </h1>
 
-      <div className="post-card" style={{ padding: "0" }}>
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column" }}>
-          
-          <div style={{ backgroundColor: selectedColor, padding: "2rem", transition: "background-color 0.3s ease" }}>
+      <form onSubmit={handleSubmit}>
+        <div className="post-card" style={{ padding: "0", marginBottom: "1rem" }}>
+          <div className="post-card-background" style={{ backgroundColor: selectedColor }} />
+
+          <div style={{ padding: "2rem", transition: "background-color 0.3s ease", position: "relative", zIndex: 1 }}>
             <textarea
               className="literary-text"
               placeholder="A poem, a quote, a fleeting thought..."
@@ -91,12 +92,13 @@ export default function AddPostPage() {
                 border: "none", 
                 fontSize: "1.25rem", 
                 minHeight: "200px",
-                resize: "none"
+                resize: "none",
+                color: "#38302A",
               }}
             />
           </div>
 
-          <div style={{ padding: "1.5rem", borderTop: "1px solid var(--border)" }}>
+          <div style={{ padding: "1.5rem", borderTop: "1px solid var(--border)", position: "relative", zIndex: 1 }}>
             <label style={{ fontSize: "0.9rem", color: "var(--text-secondary)", fontWeight: "500" }}>
               Choose a background color
             </label>
@@ -112,26 +114,25 @@ export default function AddPostPage() {
                 />
               ))}
             </div>
-
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "2rem" }}>
-              <div className={`word-count ${isOverLimit ? "limit" : ""}`}>
-                {wordCount} / 100 words
-              </div>
-              
-              <button 
-                type="submit" 
-                className="btn btn-primary" 
-                disabled={loading || isOverLimit || wordCount === 0}
-              >
-                {loading ? "Publishing..." : "Publish to Verso"}
-              </button>
-            </div>
-            
-            {error && <p style={{ color: "var(--error)", marginTop: "1rem", fontSize: "0.9rem" }}>{error}</p>}
           </div>
+        </div>
 
-        </form>
-      </div>
+        {/* Action row lives OUTSIDE post-card so dark mode vars aren't overridden */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div className={`word-count ${isOverLimit ? "limit" : ""}`}>
+            {wordCount} / 100 words
+          </div>
+          <button 
+            type="submit" 
+            className="btn btn-primary" 
+            disabled={loading || isOverLimit || wordCount === 0}
+          >
+            {loading ? "Publishing..." : "Publish to Verso"}
+          </button>
+        </div>
+
+        {error && <p style={{ color: "var(--error)", marginTop: "1rem", fontSize: "0.9rem" }}>{error}</p>}
+      </form>
     </div>
   );
 }
