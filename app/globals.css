@@ -340,8 +340,14 @@ a {
 }
 
 [data-theme="dark"] .profile-header {
-  background-color: #2E2823;
-  border-color: rgba(255,255,255,0.1);
+  background: linear-gradient(135deg, #3D2410 0%, #2C1C10 45%, #1C1510 100%);
+  border-color: rgba(210, 145, 65, 0.25);
+  animation: profilePulse 5s ease-in-out infinite alternate;
+}
+
+@keyframes profilePulse {
+  0%   { box-shadow: 0 0 18px rgba(180, 100, 35, 0.12), inset 0 1px 0 rgba(210, 145, 65, 0.08); }
+  100% { box-shadow: 0 0 36px rgba(180, 100, 35, 0.28), inset 0 1px 0 rgba(210, 145, 65, 0.18); }
 }
 
 .profile-avatar {
