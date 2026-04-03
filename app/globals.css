@@ -232,14 +232,16 @@ a {
 
 /* Darken canvas pastel colors in dark mode to match the theme */
 [data-theme="dark"] .post-card-background {
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4)) url(#torn-edge) brightness(0.45);
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4)) url(#torn-edge) brightness(0.62);
 }
 
 /* Switch canvas text to light in dark mode since background is dimmed */
 [data-theme="dark"] .post-card {
-  --text-primary: #F0EBE1;
-  --text-secondary: #C9BFB5;
+  --text-primary: #F5F0E8;
+  --text-secondary: #D4CCB8;
   --border: rgba(255,255,255,0.12);
+  /* Always-visible outline so dark-colored cards don't merge with the page */
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 6px 24px rgba(0,0,0,0.5);
 }
 
 .post-card-background {
