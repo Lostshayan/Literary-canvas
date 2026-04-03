@@ -235,6 +235,13 @@ a {
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4)) url(#torn-edge) brightness(0.55);
 }
 
+/* Switch canvas text to light in dark mode since background is dimmed */
+[data-theme="dark"] .post-card {
+  --text-primary: #EAE3D9;
+  --text-secondary: #9B9185;
+  --border: rgba(255,255,255,0.08);
+}
+
 .post-card-background {
   position: absolute;
   inset: 0;

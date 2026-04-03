@@ -47,7 +47,7 @@ export default function PostCard({ post }) {
   return (
     <div className="post-card">
       <div className="post-card-background" style={{ backgroundColor: post.color }} />
-      <p className="post-content literary-text">{post.content}</p>
+      <p className="post-content literary-text" style={{ color: "var(--text-primary)" }}>{post.content}</p>
       
       <div className="post-footer">
         <Link href={`/users/${post.authorId}`} className="post-author" style={{ textDecoration: "none" }}>
