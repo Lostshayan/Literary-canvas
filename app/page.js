@@ -64,7 +64,9 @@ export default function Home() {
       ) : (
         <div className="masonry-grid">
           {posts.map((post) => (
-            <PostCard key={post.id} post={post} />
+            <div key={post.id} className="masonry-item">
+              <PostCard post={post} />
+            </div>
           ))}
         </div>
       )}
