@@ -62,7 +62,7 @@ export default function AddPostPage() {
   }
 
   return (
-    <div style={{ maxWidth: "600px", margin: "0 auto", padding: "2rem 0" }}>
+    <div style={{ maxWidth: "600px", margin: "0 auto", padding: "1rem 0 2rem" }}>
       <h1 className="literary-text" style={{ fontSize: "2rem", marginBottom: "1.5rem" }}>
         Write something beautiful
       </h1>

@@ -98,8 +98,38 @@ a {
 
 .navbar-actions {
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
   align-items: center;
+}
+
+.navbar-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: border-color 0.2s;
+}
+
+.navbar-avatar:hover {
+  border-color: var(--text-secondary);
+}
+
+.navbar-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.navbar-avatar-fallback {
+  width: 100%;
+  height: 100%;
+  background-color: var(--border);
 }
 
 /* Buttons */
@@ -286,13 +316,14 @@ a {
 /* Profile Grid */
 .profile-header {
   display: flex;
-  align-items: center;
-  gap: 2rem;
+  align-items: flex-start;
+  gap: 1.5rem;
   margin-bottom: 3rem;
-  padding: 2rem;
+  padding: 1.5rem;
   background-color: var(--surface);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
+  flex-wrap: wrap;
 }
 
 .profile-avatar {
@@ -385,18 +416,25 @@ textarea:focus {
 
 .color-picker {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.75rem;
   margin-bottom: 1.5rem;
   margin-top: 1rem;
+  align-items: center;
 }
 
 .color-swatch {
   width: 36px;
   height: 36px;
+  min-width: 36px;
+  min-height: 36px;
   border-radius: 50%;
   border: 2px solid transparent;
   cursor: pointer;
   transition: transform 0.2s;
+  flex-shrink: 0;
+  padding: 0;
+  box-sizing: content-box;
 }
 
 .color-swatch:hover {

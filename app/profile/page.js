@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { redirect } from "next/navigation";
 import PostCard from "@/components/PostCard";
 import LiteraryLoader from "@/components/LiteraryLoader";
-import { Grid, Edit2, Check } from "lucide-react";
+import { Grid, Edit2, Check, LogOut } from "lucide-react";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession({
@@ -100,6 +100,17 @@ export default function ProfilePage() {
                 <button onClick={() => setIsEditingBio(true)} className="btn btn-ghost" style={{ padding: "0.25rem" }}><Edit2 size={14} /></button>
               </div>
             )}
+          </div>
+
+          <div style={{ marginTop: "1.25rem" }}>
+            <button
+              onClick={() => signOut({ callbackUrl: "/" })}
+              className="btn btn-outline"
+              style={{ gap: "0.5rem", fontSize: "0.9rem" }}
+            >
+              <LogOut size={16} />
+              Sign Out
+            </button>
           </div>
         </div>
       </div>
