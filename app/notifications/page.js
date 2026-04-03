@@ -77,7 +77,7 @@ export default function Notifications() {
                   <div key={req.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1rem", backgroundColor: "var(--surface)", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-sm)" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
                       <img src={req.follower.image || "/placeholder.jpg"} alt="" style={{ width: "40px", height: "40px", borderRadius: "50%", objectFit: "cover" }} />
-                      <Link href={`/users/${req.follower.id}`} style={{ fontWeight: "500" }}>{req.follower.name}</Link>
+                      <Link href={`/users/${req.follower.id}`} style={{ fontWeight: "500" }}>{req.follower.displayName || req.follower.name}</Link>
                     </div>
                     <div style={{ display: "flex", gap: "0.5rem" }}>
                       <button onClick={() => handleRequest(req.followerId, "ACCEPT")} className="btn btn-primary" style={{ padding: "0.5rem" }}>
@@ -104,7 +104,7 @@ export default function Notifications() {
                   <div key={notif.id} style={{ display: "flex", alignItems: "center", gap: "1rem", padding: "1rem", backgroundColor: "var(--surface)", borderRadius: "var(--radius-md)", borderBottom: "1px solid var(--border)" }}>
                     <img src={notif.actor.image || "/placeholder.jpg"} alt="" style={{ width: "40px", height: "40px", borderRadius: "50%", objectFit: "cover" }} />
                     <p>
-                      <Link href={`/users/${notif.actor.id}`} style={{ fontWeight: "600" }}>{notif.actor.name}</Link>
+                      <Link href={`/users/${notif.actor.id}`} style={{ fontWeight: "600" }}>{notif.actor.displayName || notif.actor.name}</Link>
                       {" "}
                       {notif.type === "LIKE" ? "liked your post." : 
                        notif.type === "FOLLOW_REQUEST" ? "sent you a follow request." :
