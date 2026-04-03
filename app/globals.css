@@ -405,7 +405,12 @@ textarea {
   font-size: 1.1rem;
   resize: vertical;
   background-color: rgba(0, 0, 0, 0.02);
+  color: var(--text-primary);
   transition: border-color 0.2s, background-color 0.2s;
+}
+
+textarea::placeholder {
+  color: var(--text-secondary);
 }
 
 textarea:focus {

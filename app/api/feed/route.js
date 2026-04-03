@@ -15,8 +15,11 @@ export async function GET() {
 
     const followingIds = followingRecords.map((record) => record.followingId);
 
+    // Include the user's own posts in their feed
+    const authorIds = [...new Set([...followingIds, session.user.id])];
+
     const posts = await prisma.post.findMany({
-      where: { authorId: { in: followingIds } },
+      where: { authorId: { in: authorIds } },
       include: {
         author: { select: { id: true, name: true, image: true } },
         likes: true,

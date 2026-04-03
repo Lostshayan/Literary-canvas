@@ -19,18 +19,26 @@ export default function PostCard({ post }) {
       alert("Please sign in to like posts.");
       return;
     }
-    
     if (loading) return;
+
+    // Optimistic update — reflect instantly
+    const wasLiked = liked;
+    setLiked(!wasLiked);
+    setLikes(prev => wasLiked ? prev - 1 : prev + 1);
     setLoading(true);
 
     try {
       const res = await fetch(`/api/posts/${post.id}/like`, { method: "POST" });
-      if (res.ok) {
-        setLiked(!liked);
-        setLikes(prev => liked ? prev - 1 : prev + 1);
+      if (!res.ok) {
+        // Revert on failure
+        setLiked(wasLiked);
+        setLikes(prev => wasLiked ? prev + 1 : prev - 1);
       }
     } catch (error) {
       console.error(error);
+      // Revert on error
+      setLiked(wasLiked);
+      setLikes(prev => wasLiked ? prev + 1 : prev - 1);
     } finally {
       setLoading(false);
     }
