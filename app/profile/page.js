@@ -105,6 +105,10 @@ export default function ProfilePage() {
     "/avatars/avatar-4.png",
     "/avatars/avatar-5.png",
     "/avatars/avatar-6.png",
+    "/avatars/avatar-7.png",
+    "/avatars/avatar-8.png",
+    "/avatars/avatar-9.png",
+    "/avatars/avatar-10.png",
   ];
 
   if (status === "loading" || loading) {
@@ -256,7 +260,7 @@ export default function ProfilePage() {
                 <X size={20} />
               </button>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "1rem" }}>
               {PRESET_AVATARS.map((src) => (
                 <button
                   key={src}
