@@ -3,21 +3,139 @@
 import { useEffect, useState } from "react";
 import PostCard from "@/components/PostCard";
 import LiteraryLoader from "@/components/LiteraryLoader";
-import { Compass } from "lucide-react";
+import { Compass, Check } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useAvatar } from "@/components/Providers";
 
-export default function Home() {
-  const { data: session, status } = useSession();
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
+const PRESET_AVATARS = [
+  "/avatars/avatar-1.png",
+  "/avatars/avatar-2.png",
+  "/avatars/avatar-3.png",
+  "/avatars/avatar-4.png",
+  "/avatars/avatar-5.png",
+  "/avatars/avatar-6.png",
+];
 
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      setLoading(false);
+function OnboardingFlow({ session, onComplete }) {
+  const [displayName, setDisplayName] = useState(session?.user?.name || "");
+  const [selectedAvatar, setSelectedAvatar] = useState(session?.user?.image || PRESET_AVATARS[0]);
+  const [saving, setSaving] = useState(false);
+  const { setAvatar } = useAvatar();
+
+  const handleSave = async () => {
+    if (!displayName.trim()) {
+      alert("Please enter a display name.");
       return;
     }
-    if (status === "authenticated") {
+
+    setSaving(true);
+    try {
+      const res = await fetch("/api/profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          displayName: displayName.trim(),
+          image: selectedAvatar,
+        }),
+      });
+
+      if (res.ok) {
+        setAvatar(selectedAvatar);
+        await onComplete(); // Triggers session.update() in Home
+      } else {
+        alert("Failed to save profile.");
+        setSaving(false);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("An error occurred while saving.");
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div style={{ maxWidth: "500px", margin: "0 auto", padding: "4rem 1rem", textAlign: "center" }}>
+      <h1 className="literary-text" style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>Welcome to Verso</h1>
+      <p style={{ color: "var(--text-secondary)", marginBottom: "3rem" }}>
+        Let's set up your literary persona before you start exploring.
+      </p>
+
+      <div style={{ marginBottom: "2.5rem", textAlign: "left" }}>
+        <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500", color: "var(--text-primary)" }}>
+          Your Display Name
+        </label>
+        <input
+          type="text"
+          value={displayName}
+          onChange={e => setDisplayName(e.target.value)}
+          placeholder="e.g. Jane Austen"
+          style={{
+            width: "100%", padding: "0.75rem", borderRadius: "var(--radius-md)",
+            border: "1px solid var(--border)", backgroundColor: "var(--bg)",
+            color: "var(--text-primary)", fontSize: "1rem", outline: "none"
+          }}
+          disabled={saving}
+        />
+      </div>
+
+      <div style={{ marginBottom: "3rem", textAlign: "left" }}>
+        <label style={{ display: "block", marginBottom: "1rem", fontWeight: "500", color: "var(--text-primary)" }}>
+          Choose an Avatar (Optional)
+        </label>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem" }}>
+          {PRESET_AVATARS.map((src) => (
+            <button
+              key={src}
+              onClick={() => setSelectedAvatar(src)}
+              disabled={saving}
+              style={{
+                padding: 0, border: selectedAvatar === src ? "3px solid var(--accent-hover)" : "3px solid transparent",
+                borderRadius: "12px", overflow: "hidden", cursor: "pointer",
+                transition: "border-color 0.2s, transform 0.2s",
+                transform: selectedAvatar === src ? "scale(1.05)" : "scale(1)",
+                background: "none",
+                position: "relative"
+              }}
+            >
+              <img src={src} alt="Avatar option" style={{ width: "100%", aspectRatio: "1", objectFit: "cover", display: "block" }} />
+              {selectedAvatar === src && (
+                <div style={{ position: "absolute", top: "5px", right: "5px", backgroundColor: "var(--accent-hover)", borderRadius: "50%", padding: "2px", color: "white" }}>
+                  <Check size={14} strokeWidth={3} />
+                </div>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <button
+        onClick={handleSave}
+        disabled={saving || !displayName.trim()}
+        className="btn btn-primary"
+        style={{ width: "100%", padding: "1rem", fontSize: "1.1rem", justifyContent: "center" }}
+      >
+        {saving ? "Setting up..." : "Enter Verso"}
+      </button>
+    </div>
+  );
+}
+
+export default function Home() {
+  const { data: session, status, update } = useSession();
+  const [posts, setPosts] = useState([]);
+  const [loadingFeed, setLoadingFeed] = useState(true);
+
+  // Derive if onboarding is needed directly from session!
+  // No extra fetches, completely immune to hydration mismatches caused by redirects.
+  const needsOnboarding = status === "authenticated" && !session?.user?.displayName;
+
+  useEffect(() => {
+    if (status === "unauthenticated" || needsOnboarding) {
+      setLoadingFeed(false);
+      return;
+    }
+    if (status === "authenticated" && !needsOnboarding) {
       const fetchFeed = async () => {
         try {
           const res = await fetch("/api/feed");
@@ -28,15 +146,17 @@ export default function Home() {
         } catch (error) {
           console.error("Failed to fetch feed:", error);
         } finally {
-          setLoading(false);
+          setLoadingFeed(false);
         }
       };
 
       fetchFeed();
     }
-  }, [status]);
+  }, [status, needsOnboarding]);
 
-  if (loading) return <LiteraryLoader />;
+  if (status === "loading" || (loadingFeed && status === "authenticated" && !needsOnboarding)) {
+    return <LiteraryLoader />;
+  }
 
   if (!session) {
     return (
@@ -51,6 +171,14 @@ export default function Home() {
         </Link>
       </div>
     );
+  }
+
+  // Inject onboarding directly here!
+  if (needsOnboarding) {
+    return <OnboardingFlow session={session} onComplete={async () => {
+      // Refresh the session in NextAuth so the UI instantly updates to the feed without reloading
+      await update();
+    }} />;
   }
 
   return (
