@@ -32,12 +32,12 @@ export async function POST(req, { params }) {
       });
       return NextResponse.json({ message: "Unfollowed successfully", isFollowing: false, isPending: false });
     } else {
-      // Send Follow Request
+      // Instant Follow
       await prisma.follow.create({
         data: {
           followerId: currentUserId,
           followingId: targetUserId,
-          status: "PENDING",
+          status: "ACCEPTED",
         },
       });
 
@@ -46,11 +46,11 @@ export async function POST(req, { params }) {
         data: {
           userId: targetUserId,
           actorId: currentUserId,
-          type: "FOLLOW_REQUEST",
+          type: "FOLLOW",
         },
       });
 
-      return NextResponse.json({ message: "Follow request sent", isFollowing: false, isPending: true });
+      return NextResponse.json({ message: "Successfully followed", isFollowing: true, isPending: false });
     }
   } catch (error) {
     console.error("Follow error:", error);

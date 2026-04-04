@@ -38,7 +38,7 @@ export default function UserProfile({ params }) {
       const prevStatus = data.followStatus;
       setData(prev => ({
         ...prev,
-        followStatus: prevStatus === "NONE" ? "PENDING" : "NONE",
+        followStatus: prevStatus === "NONE" ? "ACCEPTED" : "NONE",
       }));
 
       const res = await fetch(`/api/users/${id}/follow`, { method: "POST" });
@@ -46,7 +46,7 @@ export default function UserProfile({ params }) {
         const result = await res.json();
         setData(prev => ({
           ...prev,
-          followStatus: result.isPending ? "PENDING" : result.isFollowing ? "ACCEPTED" : "NONE",
+          followStatus: result.isFollowing ? "ACCEPTED" : "NONE",
         }));
       } else {
         // Revert
@@ -88,7 +88,6 @@ export default function UserProfile({ params }) {
                 style={{ padding: "0.45rem 1.2rem", flexShrink: 0, whiteSpace: "nowrap" }}
               >
                 {data.followStatus === "NONE" && <><UserPlus size={16} /> Follow</>}
-                {data.followStatus === "PENDING" && <><Clock size={16} /> Requested</>}
                 {data.followStatus === "ACCEPTED" && <><Check size={16} /> Following</>}
               </button>
             )}
