@@ -170,17 +170,17 @@ export default function Home() {
           A private space for short poetic texts and literary pieces.
         </p>
         <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap", marginBottom: "4rem" }}>
-          <Link href="/explore" className="btn btn-outline" style={{ padding: "0.75rem 1.5rem", fontSize: "1.1rem" }}>
+          <Link href="/explore" className="btn btn-outline landing-btn" style={{ padding: "0.75rem 1.5rem", fontSize: "1.1rem" }}>
             <Compass size={18} />
             Explore Public Board
           </Link>
-          <button onClick={() => signIn("google")} className="btn btn-primary" style={{ padding: "0.75rem 1.5rem", fontSize: "1.1rem" }}>
+          <button onClick={() => signIn("google")} className="btn btn-primary landing-btn" style={{ padding: "0.75rem 1.5rem", fontSize: "1.1rem" }}>
             <LogIn size={18} />
             Sign in with Google
           </button>
         </div>
 
-        <div style={{ textAlign: "left", maxWidth: "600px", margin: "0 auto", padding: "2rem", backgroundColor: "var(--surface)", borderRadius: "var(--radius-lg)", border: "1px solid var(--border)" }}>
+        <div className="landing-box">
           <h2 className="literary-text" style={{ fontSize: "1.5rem", marginBottom: "1rem", color: "var(--text-primary)" }}>What is Verso?</h2>
           <p style={{ color: "var(--text-secondary)", lineHeight: "1.6", marginBottom: "1rem" }}>
             Verso is a minimalist sanctuary for writers, poets, and thinkers. It's a place to share bite-sized thoughts, beautiful quotes, or snippets of stories without the noise of traditional social media.
