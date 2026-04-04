@@ -8,7 +8,7 @@ export async function GET(req) {
     const posts = await prisma.post.findMany({
       include: {
         author: {
-          select: { name: true, image: true },
+          select: { id: true, name: true, displayName: true, image: true },
         },
         likes: true,
       },
