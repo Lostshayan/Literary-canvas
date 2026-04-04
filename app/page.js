@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import PostCard from "@/components/PostCard";
 import LiteraryLoader from "@/components/LiteraryLoader";
-import { Compass, Check } from "lucide-react";
-import { useSession } from "next-auth/react";
+import { Compass, Check, LogIn } from "lucide-react";
+import { useSession, signIn } from "next-auth/react";
 import Link from "next/link";
 import { useAvatar } from "@/components/Providers";
 
@@ -165,10 +165,16 @@ export default function Home() {
         <p style={{ color: "var(--text-secondary)", marginBottom: "2rem" }}>
           A private space for short poetic texts and literary pieces.
         </p>
-        <Link href="/explore" className="btn btn-primary" style={{ padding: "0.75rem 1.5rem", fontSize: "1.1rem" }}>
-          <Compass size={18} />
-          Explore Public Board
-        </Link>
+        <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
+          <Link href="/explore" className="btn btn-outline" style={{ padding: "0.75rem 1.5rem", fontSize: "1.1rem" }}>
+            <Compass size={18} />
+            Explore Public Board
+          </Link>
+          <button onClick={() => signIn("google")} className="btn btn-primary" style={{ padding: "0.75rem 1.5rem", fontSize: "1.1rem" }}>
+            <LogIn size={18} />
+            Sign in with Google
+          </button>
+        </div>
       </div>
     );
   }
