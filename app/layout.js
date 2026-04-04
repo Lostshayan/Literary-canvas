@@ -7,7 +7,7 @@ import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 
 export const metadata = {
   title: "Verso",
-  description: "A private social network for short poetic texts and literary pieces.",
+  description: "Share bite-sized poetry, quotes, and stories with the world.",
   manifest: "/manifest.json",
   themeColor: "#38302A",
   other: {
