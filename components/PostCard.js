@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { Heart, Trash2, Pencil, Check, X } from "lucide-react";
+import { Heart, Trash2, Pencil, Check, X, Share2 } from "lucide-react";
 import Link from "next/link";
 
 export default function PostCard({ post, onDelete }) {
@@ -12,6 +12,7 @@ export default function PostCard({ post, onDelete }) {
   const [liked, setLiked] = useState(isInitiallyLiked || false);
   const [loading, setLoading] = useState(false);
   const [deleted, setDeleted] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   // Edit state
   const [isEditing, setIsEditing] = useState(false);
@@ -40,6 +41,31 @@ export default function PostCard({ post, onDelete }) {
       setLikes(prev => wasLiked ? prev + 1 : prev - 1);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleShare = async () => {
+    const url = `${window.location.origin}/post/${post.id}`;
+    const shareData = {
+      title: 'Verso',
+      text: `Check out this piece by ${displayName} on Verso`,
+      url: url,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        if (err.name !== "AbortError") console.error('Error sharing:', err);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error('Error copying to clipboard:', err);
+      }
     }
   };
 
@@ -154,6 +180,32 @@ export default function PostCard({ post, onDelete }) {
         </Link>
 
         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <button
+            onClick={handleShare}
+            className="like-button"
+            aria-label="Share post"
+            style={{ color: copied ? "var(--accent-hover)" : "var(--text-secondary)", position: "relative" }}
+          >
+            <Share2 size={16} />
+            {copied && (
+              <span style={{ 
+                position: "absolute", 
+                bottom: "100%", 
+                left: "50%", 
+                transform: "translateX(-50%)", 
+                backgroundColor: "var(--bg-card)", 
+                padding: "2px 6px", 
+                borderRadius: "4px", 
+                fontSize: "10px",
+                whiteSpace: "nowrap",
+                border: "1px solid var(--border)",
+                marginBottom: "5px"
+              }}>
+                Copied!
+              </span>
+            )}
+          </button>
+
           {isOwner && !isEditing && (
             <>
               <button
@@ -186,5 +238,6 @@ export default function PostCard({ post, onDelete }) {
         </div>
       </div>
     </div>
+
   );
 }
