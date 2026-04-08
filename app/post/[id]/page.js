@@ -25,20 +25,11 @@ export async function generateMetadata({ params }) {
       description: snippet,
       type: "article",
       siteName: "Verso",
-      images: [
-        {
-          url: post.author?.image || "https://literary-canvas.vercel.app/icon.png",
-          width: 400,
-          height: 400,
-          alt: `${displayName}'s avatar`,
-        },
-      ],
     },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title: `A piece by ${displayName} on Verso`,
       description: snippet,
-      images: [post.author?.image || "https://literary-canvas.vercel.app/icon.png"],
     },
   };
 }
