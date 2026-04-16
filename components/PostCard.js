@@ -13,6 +13,8 @@ export default function PostCard({ post, onDelete }) {
   const [loading, setLoading] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [sharing, setSharing] = useState(false);
+
 
   // Edit state
   const [isEditing, setIsEditing] = useState(false);
