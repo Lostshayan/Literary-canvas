@@ -21,9 +21,9 @@ export default async function Image({ params }) {
       return new Response('Not Found', { status: 404 });
   }
 
-  // Fetch Playfair Display font from Google Fonts
+  // Fetch Playfair Display font locally to prevent Google Fonts 404 errors causing Server 500s
   const fontData = await fetch(
-    new URL('https://fonts.gstatic.com/s/playfairdisplay/v37/nuFvPreSCwDcUEytqnElXbd88OC-sc6_937FbnB-Wf7X.ttf')
+    new URL('./Playfair-Regular.ttf', import.meta.url)
   ).then((res) => res.arrayBuffer());
 
   const displayName = post.author?.displayName || post.author?.name || "Anonymous";
