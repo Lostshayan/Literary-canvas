@@ -24,6 +24,9 @@ model User {
   following     Follow[] @relation("UserFollowing")
   notifications Notification[] @relation("UserNotifications")
   sentNotifications Notification[] @relation("ActionCreator")
+
+  comments      Comment[]
+  commentLikes  CommentLike[]
 }
 
 model Account {
@@ -69,6 +72,7 @@ model Post {
   authorId  String
   author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   likes     Like[]
+  comments  Comment[]
 }
 
 model Like {
@@ -98,11 +102,37 @@ model Notification {
   id        String   @id @default(cuid())
   userId    String   // Person receiving notification
   actorId   String   // Person who triggered it
-  type      String   // LIKE, FOLLOW_REQUEST, FOLLOW_ACCEPTED
+  type      String   // LIKE, FOLLOW_REQUEST, FOLLOW_ACCEPTED, COMMENT, REPLY, COMMENT_LIKE
   postId    String?  // Optional, if related to a post
+  commentId String?  // Optional, if related to a comment
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
 
   user  User  @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
   actor User  @relation("ActionCreator", fields: [actorId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  text      String
+  createdAt DateTime @default(now())
+  authorId  String
+  postId    String
+  parentId  String? // For nested replies
+
+  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  post      Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Comment[] @relation("CommentReplies")
+  likes     CommentLike[]
+}
+
+model CommentLike {
+  id        String  @id @default(cuid())
+  userId    String
+  commentId String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, commentId])
 }

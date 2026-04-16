@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { Heart, Trash2, Pencil, Check, X, Share2 } from "lucide-react";
+import { Heart, Trash2, Pencil, Check, X, Share2, MessageCircle } from "lucide-react";
 import Link from "next/link";
 
 export default function PostCard({ post, onDelete }) {
@@ -235,6 +235,15 @@ export default function PostCard({ post, onDelete }) {
               </button>
             </>
           )}
+          <Link
+            href={`/post/${post.id}`}
+            className="like-button"
+            aria-label="View comments"
+            style={{ color: "var(--text-secondary)", textDecoration: "none" }}
+          >
+            <MessageCircle size={17} />
+            {post.comments && <span>{post.comments.length}</span>}
+          </Link>
           <button
             className={`like-button ${liked ? "liked" : ""}`}
             onClick={handleLike}

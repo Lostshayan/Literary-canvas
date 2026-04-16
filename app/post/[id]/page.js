@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import PostCard from "@/components/PostCard";
+import CommentSection from "@/components/CommentSection";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -85,6 +86,8 @@ export default async function PostPage({ params }) {
       >
         <PostCard post={post} />
       </div>
+
+      <CommentSection postId={post.id} />
 
       {/* Note: fadeIn animation is already handled by inline style + some global CSS or simple transition */}
     </div>
