@@ -33,6 +33,32 @@ export default function CommentSection({ postId }) {
     const textToPost = textOverride || newComment;
     if (!textToPost.trim()) return;
 
+    // Optimistic UI update
+    const tempId = `temp-${Date.now()}`;
+    const newCommentObj = {
+      id: tempId,
+      text: textToPost.trim(),
+      createdAt: new Date().toISOString(),
+      authorId: session.user.id,
+      postId: postId,
+      parentId: parentId || null,
+      author: { ...session.user },
+      likes: [],
+      replies: []
+    };
+
+    if (parentId) {
+      setComments(prev => prev.map(c => 
+        c.id === parentId 
+        ? { ...c, replies: [...(c.replies || []), newCommentObj] }
+        : c
+      ));
+      setReplyingTo(null);
+    } else {
+      setComments(prev => [...prev, newCommentObj]);
+      setNewComment("");
+    }
+
     setSubmitting(true);
     try {
       const res = await fetch(`/api/posts/${postId}/comments`, {
@@ -41,10 +67,23 @@ export default function CommentSection({ postId }) {
         body: JSON.stringify({ text: textToPost, parentId }),
       });
       if (res.ok) {
-        if (!parentId) setNewComment("");
-        setReplyingTo(null);
-        fetchComments(); // Refresh list to get relationships correctly
+        const generatedComment = await res.json();
+        // Replace temp comment with actual comment id
+        if (parentId) {
+          setComments(prev => prev.map(c => 
+            c.id === parentId 
+            ? { ...c, replies: c.replies.map(r => r.id === tempId ? generatedComment : r) }
+            : c
+          ));
+        } else {
+          setComments(prev => prev.map(c => c.id === tempId ? generatedComment : c));
+        }
+      } else {
+        // Revert on error
+        fetchComments();
       }
+    } catch {
+      fetchComments(); // Revert on network error
     } finally {
       setSubmitting(false);
     }
@@ -58,8 +97,28 @@ export default function CommentSection({ postId }) {
 
   const handleLike = async (commentId) => {
     if (!session) return;
+    
+    // Optimistic UI toggle for likes
+    const toggleLike = (commentList) => {
+      return commentList.map(c => {
+        if (c.id === commentId) {
+          const isLiked = c.likes?.some(l => l.userId === session.user.id);
+          const newLikes = isLiked 
+            ? c.likes.filter(l => l.userId !== session.user.id)
+            : [...(c.likes || []), { userId: session.user.id, commentId }];
+          return { ...c, likes: newLikes };
+        }
+        if (c.replies && c.replies.length > 0) {
+          return { ...c, replies: toggleLike(c.replies) };
+        }
+        return c;
+      });
+    };
+    
+    setComments(prev => toggleLike(prev));
+
     const res = await fetch(`/api/comments/${commentId}/like`, { method: "POST" });
-    if (res.ok) fetchComments(); // Reload for updated likes
+    if (!res.ok) fetchComments(); // Revert on failure
   };
 
   const renderComment = (comment, isReply = false) => {

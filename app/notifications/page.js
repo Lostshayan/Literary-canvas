@@ -66,6 +66,9 @@ export default function Notifications() {
                       <Link href={`/users/${notif.actor.id}`} style={{ fontWeight: "600" }}>{notif.actor.displayName || notif.actor.name}</Link>
                       {" "}
                       {notif.type === "LIKE" ? "liked your post." : 
+                       notif.type === "COMMENT" ? "commented on your post." :
+                       notif.type === "REPLY" ? "replied to your comment." :
+                       notif.type === "COMMENT_LIKE" ? "liked your comment." :
                        notif.type === "FOLLOW" ? "started following you." :
                        notif.type === "FOLLOW_REQUEST" ? "sent you a follow request." :
                        notif.type === "FOLLOW_ACCEPTED" ? "accepted your follow request!" : "interacted with you."}
