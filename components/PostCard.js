@@ -45,27 +45,34 @@ export default function PostCard({ post, onDelete }) {
   };
 
   const handleShare = async () => {
-    const url = `${window.location.origin}/post/${post.id}`;
-    const shareData = {
-      title: 'Verso',
-      text: `Check out this piece by ${displayName} on Verso`,
-      url: url,
-    };
+    if (sharing) return;
+    setSharing(true);
+    
+    try {
+      const url = `${window.location.origin}/post/${post.id}`;
+      const shareData = {
+        title: 'Verso',
+        text: `Check out this piece by ${displayName} on Verso`,
+        url: url,
+      };
 
-    if (navigator.share) {
-      try {
-        await navigator.share(shareData);
-      } catch (err) {
-        if (err.name !== "AbortError") console.error('Error sharing:', err);
+      if (navigator.share) {
+        try {
+          await navigator.share(shareData);
+        } catch (err) {
+          if (err.name !== "AbortError") console.error('Error sharing:', err);
+        }
+      } else {
+        try {
+          await navigator.clipboard.writeText(url);
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        } catch (err) {
+          console.error('Error copying to clipboard:', err);
+        }
       }
-    } else {
-      try {
-        await navigator.clipboard.writeText(url);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      } catch (err) {
-        console.error('Error copying to clipboard:', err);
-      }
+    } finally {
+      setSharing(false);
     }
   };
 
