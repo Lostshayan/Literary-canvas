@@ -55,8 +55,7 @@ export default async function Image({ params }) {
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundImage: 'radial-gradient(circle at 25% 25%, rgba(0,0,0,0.01) 1%, transparent 0%), radial-gradient(circle at 75% 75%, rgba(0,0,0,0.01) 1%, transparent 0%)',
-            backgroundSize: '20px 20px',
+            backgroundColor: 'rgba(0,0,0,0.02)',
           }}
         />
 
@@ -99,7 +98,6 @@ export default async function Image({ params }) {
               color: '#38302A',
               marginBottom: '60px',
               textAlign: 'left',
-              fontStyle: 'italic',
             }}
           >
             "{post.content.length > 250 ? post.content.substring(0, 247) + '...' : post.content}"
