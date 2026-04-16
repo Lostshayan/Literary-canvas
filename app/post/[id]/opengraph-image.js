@@ -1,7 +1,5 @@
 import { ImageResponse } from 'next/og';
 import { prisma } from '@/lib/prisma';
-import fs from 'fs';
-import path from 'path';
 
 export const runtime = 'nodejs';
 
@@ -23,10 +21,6 @@ export default async function Image({ params }) {
     if (!post) {
         return new Response('Not Found', { status: 404 });
     }
-
-    // Force strict font path resolving from the public directory
-    const fontPath = path.join(process.cwd(), 'public', 'Playfair-Regular.ttf');
-    const fontData = fs.readFileSync(fontPath);
 
     const displayName = post.author?.displayName || post.author?.name || "Anonymous";
     const initial = displayName.charAt(0).toUpperCase();
@@ -69,7 +63,7 @@ export default async function Image({ params }) {
               gap: '10px',
             }}
           >
-            <div style={{ fontSize: '28px', fontFamily: 'Playfair Display', color: '#7A6F65', fontWeight: 600 }}>
+            <div style={{ fontSize: '28px', color: '#7A6F65', fontWeight: 600 }}>
               Verso
             </div>
           </div>
@@ -92,7 +86,6 @@ export default async function Image({ params }) {
             <div
               style={{
                 fontSize: post.content.length > 100 ? '42px' : '54px',
-                fontFamily: 'Playfair Display',
                 lineHeight: 1.5,
                 color: '#38302A',
                 marginBottom: '60px',
@@ -134,18 +127,11 @@ export default async function Image({ params }) {
       ),
       {
         ...size,
-        fonts: [
-          {
-            name: 'Playfair Display',
-            data: fontData,
-            style: 'normal',
-          },
-        ],
       }
     );
   } catch (error) {
     console.error("OG Image generation failed:", error);
-    return new Response(`Failed to generate image`, {
+    return new Response(`Failed to generate image: ${error.message}`, {
       status: 500,
     });
   }
