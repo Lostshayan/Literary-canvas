@@ -27,7 +27,7 @@ export default async function Image({ params }) {
   ).then((res) => res.arrayBuffer());
 
   const displayName = post.author?.displayName || post.author?.name || "Anonymous";
-  const origin = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+  const origin = 'https://literary-canvas.vercel.app';
   const avatarUrl = post.author?.image 
     ? (post.author.image.startsWith('http') ? post.author.image : `${origin}${post.author.image}`)
     : null;

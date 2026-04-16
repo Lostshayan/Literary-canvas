@@ -6,6 +6,7 @@ import BottomNav from "@/components/BottomNav";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 
 export const metadata = {
+  metadataBase: new URL('https://literary-canvas.vercel.app'),
   title: "Verso",
   description: "Share bite-sized poetry, quotes, and stories with the world.",
   manifest: "/manifest.json",
