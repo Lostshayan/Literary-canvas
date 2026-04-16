@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export async function DELETE(req, { params }) {
@@ -8,7 +8,8 @@ export async function DELETE(req, { params }) {
     const session = await getServerSession(authOptions);
     if (!session) return new NextResponse("Unauthorized", { status: 401 });
 
-    const commentId = params.commentId;
+    const unawaitedParams = await params;
+    const commentId = unawaitedParams.commentId;
 
     const existingComment = await prisma.comment.findUnique({
       where: { id: commentId },

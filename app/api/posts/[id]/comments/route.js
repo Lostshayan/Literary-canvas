@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(req, { params }) {
   try {
+    const unawaitedParams = await params;
     const comments = await prisma.comment.findMany({
-      where: { postId: params.id, parentId: null },
+      where: { postId: unawaitedParams.id, parentId: null },
       orderBy: { createdAt: "asc" },
       include: {
         author: { select: { id: true, name: true, displayName: true, image: true } },
@@ -32,6 +33,7 @@ export async function POST(req, { params }) {
     const session = await getServerSession(authOptions);
     if (!session) return new NextResponse("Unauthorized", { status: 401 });
 
+    const unawaitedParams = await params;
     const body = await req.json();
     const { text, parentId } = body;
 
@@ -42,7 +44,7 @@ export async function POST(req, { params }) {
     const comment = await prisma.comment.create({
       data: {
         text: text.trim(),
-        postId: params.id,
+        postId: unawaitedParams.id,
         authorId: session.user.id,
         parentId: parentId || null
       },
@@ -54,14 +56,14 @@ export async function POST(req, { params }) {
     });
 
     // Notify post author (if not self)
-    const post = await prisma.post.findUnique({ where: { id: params.id }, select: { authorId: true } });
+    const post = await prisma.post.findUnique({ where: { id: unawaitedParams.id }, select: { authorId: true } });
     if (post && post.authorId !== session.user.id && !parentId) {
       await prisma.notification.create({
         data: {
           userId: post.authorId,
           actorId: session.user.id,
           type: "COMMENT",
-          postId: params.id,
+          postId: unawaitedParams.id,
           commentId: comment.id,
         }
       });
@@ -76,7 +78,7 @@ export async function POST(req, { params }) {
             userId: parentComment.authorId,
             actorId: session.user.id,
             type: "REPLY",
-            postId: params.id,
+            postId: unawaitedParams.id,
             commentId: comment.id,
           }
         });
