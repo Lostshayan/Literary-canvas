@@ -13,8 +13,9 @@ export const contentType = 'image/png';
 
 export default async function Image({ params }) {
   try {
+    const resolvedParams = await params;
     const post = await prisma.post.findUnique({
-      where: { id: params.id },
+      where: { id: resolvedParams.id },
       include: { author: true }
     });
 
