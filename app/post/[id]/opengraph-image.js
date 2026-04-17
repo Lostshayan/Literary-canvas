@@ -23,13 +23,91 @@ export default async function Image({ params }) {
         return new Response('Not Found', { status: 404 });
     }
 
+    // SAFE SATORI UI (No BoxShadow, No Inset Absolutes)
     const displayName = post.author?.displayName || post.author?.name || "Anonymous";
 
-    // ULTRA MINIMAL SATORI TO PREVENT CSS EXCEPTIONS
     return new ImageResponse(
       (
-        <div style={{ display: 'flex', width: '100%', height: '100%', backgroundColor: 'white', justifyContent: 'center', alignItems: 'center', fontSize: '64px' }}>
-          Hello {displayName}!
+        <div
+          style={{
+            height: '100%',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#FDF9F1',
+            padding: '80px',
+          }}
+        >
+          {/* Verso Branding */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '40px',
+              right: '60px',
+              display: 'flex',
+              fontSize: '28px',
+              color: '#7A6F65',
+              fontWeight: 600,
+            }}
+          >
+            Verso
+          </div>
+
+          {/* Post Card Mimic */}
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100%',
+              backgroundColor: '#FFFFFF',
+              borderRadius: '12px',
+              border: '1px solid #E8DDCE',
+              padding: '60px',
+            }}
+          >
+            {/* Post Content */}
+            <div
+              style={{
+                fontSize: post.content.length > 100 ? '42px' : '54px',
+                lineHeight: 1.5,
+                color: '#38302A',
+                marginBottom: '60px',
+                textAlign: 'left',
+              }}
+            >
+              "{post.content.length > 250 ? post.content.substring(0, 247) + '...' : post.content}"
+            </div>
+
+            {/* Footer Line */}
+            <div style={{ width: '100%', height: '1px', backgroundColor: '#E8DDCE', marginBottom: '30px' }} />
+
+            {/* Author Section */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+              <div style={{ 
+                width: '70px', 
+                height: '70px', 
+                borderRadius: '35px', 
+                backgroundColor: '#E8DDCE',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '32px',
+                color: '#7A6F65',
+              }}>
+                {displayName.charAt(0).toUpperCase()}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <div style={{ fontSize: '32px', fontWeight: 600, color: '#38302A' }}>
+                  {displayName}
+                </div>
+                <div style={{ fontSize: '18px', color: '#7A6F65', letterSpacing: '1px', textTransform: 'uppercase' }}>
+                  Literary Collector
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       ),
       {
