@@ -26,11 +26,20 @@ export async function generateMetadata({ params }) {
       description: snippet,
       type: "article",
       siteName: "Verso",
+      images: [
+        {
+          url: `/api/og?id=${post.id}&v=${new Date().getTime()}`,
+          width: 1200,
+          height: 630,
+          alt: "Verso preview",
+        }
+      ]
     },
     twitter: {
       card: "summary_large_image",
       title: `A piece by ${displayName} on Verso`,
       description: snippet,
+      images: [`/api/og?id=${post.id}&v=${new Date().getTime()}`],
     },
   };
 }

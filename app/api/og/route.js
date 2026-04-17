@@ -3,19 +3,15 @@ import { prisma } from '@/lib/prisma';
 
 export const runtime = 'nodejs';
 
-export const alt = 'Verso Post Preview';
-export const size = {
-  width: 1200,
-  height: 630,
-};
-
-export const contentType = 'image/png';
-
-export default async function Image({ params }) {
+export async function GET(request) {
   try {
-    const resolvedParams = await params;
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) return new Response('Missing ID', { status: 400 });
+
     const post = await prisma.post.findUnique({
-      where: { id: resolvedParams.id },
+      where: { id },
       include: { author: true }
     });
 
@@ -111,7 +107,8 @@ export default async function Image({ params }) {
         </div>
       ),
       {
-        ...size,
+        width: 1200,
+        height: 630,
       }
     );
   } catch (error) {
