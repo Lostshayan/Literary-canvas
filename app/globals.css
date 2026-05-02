@@ -641,6 +641,11 @@ textarea:focus {
   background-color: rgba(255, 255, 255, 0.05);
 }
 
+[data-theme="dark"] .switcher-btn.active {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+}
+
 @media (max-width: 640px) {
   .bottom-switcher-container {
     bottom: 1.5rem;
