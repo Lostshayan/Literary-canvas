@@ -1,36 +1,106 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Verso
 
-## Getting Started
+**Verso** is a minimalist, premium social platform and sanctuary for writers, poets, and thinkers. It provides a focused, canvas-like space to share short poetic texts, quotes, and snippets of stories without the clutter of traditional social media.
 
-First, run the development server:
+Designed with a dark academia aesthetic, Verso lets your words breathe, allowing readers to immerse themselves fully in the text.
+
+---
+
+## 🌟 Features
+
+- **Minimalist Canvas Postings:** Write and share short literary pieces on custom-colored cards.
+- **Dynamic Masonry Layout:** Explore public posts or your personal feed rendered in a responsive, fluid masonry grid.
+- **Instant Follow System:** Seamlessly follow your favorite authors instantly to curate a personalized homepage timeline.
+- **Interactive Comments & Likes:** Engage with posts through real-time likes and nested comments.
+- **Profile Customization:** Personalize your literary persona with bios, display names, and a selection of curated preset avatars (from cozy reading pandas to dark academia rangers).
+- **Progressive Web App (PWA):** Install Verso on your mobile device or desktop with support for offline caching, home screen shortcuts, and a seamless native feel.
+- **Aesthetic Dark & Light Themes:** Toggle between a warm dark mode (featuring rich outlines and high-contrast styling) and a crisp light mode.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework:** [Next.js](https://nextjs.org/) (App Router, React)
+- **Database:** PostgreSQL (Hosted on [Supabase](https://supabase.com/))
+- **ORM:** [Prisma](https://www.prisma.io/)
+- **Authentication:** [NextAuth.js](https://next-auth.js.org/) (Google Provider, Database Session strategy)
+- **Styling:** CSS Variables, Custom Vanilla CSS (with responsive grid layouts and rich glassmorphism/micro-animations)
+- **Icons:** [Lucide React](https://lucide.dev/)
+
+---
+
+## 🚀 Getting Started
+
+### 1. Prerequisites
+
+Make sure you have Node.js (v18+) and npm/yarn installed.
+
+### 2. Installation
+
+Clone the repository and install dependencies:
+
+```bash
+git clone https://github.com/Lostshayan/Literary-canvas.git
+cd Literary-canvas
+npm install
+```
+
+### 3. Environment Setup
+
+Create a `.env` file in the root directory and add the following variables:
+
+```env
+# Database connection (PostgreSQL)
+DATABASE_URL="your-postgresql-connection-string"
+
+# NextAuth secret & URL
+NEXTAUTH_SECRET="your-nextauth-secret-key"
+NEXTAUTH_URL="http://localhost:3000"
+
+# Google OAuth credentials (for sign-in)
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+```
+
+### 4. Database Setup
+
+Run Prisma migrations to set up your database schema:
+
+```bash
+npx prisma db push
+```
+
+### 5. Running the Application
+
+Start the Next.js development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📦 Project Structure
 
-## Learn More
+```text
+├── app/                  # Next.js App Router pages and API routes
+│   ├── add/              # New post editor
+│   ├── api/              # API endpoints (auth, posts, comments, profile, follow, notifications)
+│   ├── explore/          # Public explore feed
+│   ├── notifications/    # Follow & like notification panel
+│   ├── post/[id]/        # Individual post page with comment section
+│   ├── profile/          # Logged-in user's profile and settings
+│   └── users/[id]/       # Profile pages of other authors
+├── components/           # Reusable UI components (PostCard, Navbar, PWA prompts, etc.)
+├── lib/                  # Library configurations (Prisma client, NextAuth options)
+├── prisma/               # Database schema definitions
+└── public/               # Static assets (avatars, SW, PWA icons)
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📱 Progressive Web App (PWA)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Verso is fully PWA-compliant. When visiting the site on a mobile browser (Safari on iOS or Chrome on Android), you will be prompted with a custom, beautifully integrated dialog to **Add to Home Screen**. Once installed, it behaves like a standalone application with standalone display configuration, background sw, and an optimized mobile layout.
